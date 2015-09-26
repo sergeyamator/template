@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "browser-sync": "^2.9.6",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-compass": "^2.1.0",

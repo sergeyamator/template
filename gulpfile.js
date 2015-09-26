@@ -2,7 +2,7 @@
 
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
-    webserver = require('gulp-webserver'),
+    browserSync = require('browser-sync'),
     uglify = require('gulp-uglify'),
     compass = require('gulp-compass'),
     autoprefixer = require('gulp-autoprefixer'),
@@ -93,12 +93,13 @@ gulp.task('imagemin', function () {
 
 
 /* -------- gulp server  -------- */
-gulp.task('webserver', function () {
-    gulp.src('dev')
-        .pipe(webserver({
-            livereload: true,
-            open: true
-        }));
+gulp.task('server', function () {
+    browserSync({
+        port: 9000,
+        server: {
+            baseDir: 'dev'
+        }
+    });
 });
 
 
@@ -111,6 +112,11 @@ gulp.task('watch', function () {
     gulp.watch('dev/js/modules/*.js', ['concat']);
     gulp.watch('dev/js/app.js', ['compress']);
     gulp.watch('dev/img/**/*', ['imagemin']);
+    gulp.watch([
+        'dev/index.html',
+        'dev/js/**/*.js',
+        'dev/css/**/*.css'
+    ]).on('change', browserSync.reload);
 });
 
 
@@ -120,7 +126,7 @@ gulp.task('default', [
     'compass',
     'concat',
     'compress',
-    'webserver'
+    'server'
 ]);
 
 
