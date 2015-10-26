@@ -13,7 +13,9 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     pngquant = require('imagemin-pngquant'),
     spritesmith = require('gulp.spritesmith'),
-    plumber = require('gulp-plumber');
+    plumber = require('gulp-plumber'),
+    mainBowerFiles = require('gulp-main-bower-files'),
+    gulpFilter = require('gulp-filter');
 
 /* ----- jade ----- */
 gulp.task('jade', function () {
@@ -90,6 +92,29 @@ gulp.task('imagemin', function () {
         }))
         .pipe(gulp.dest('prod/img'));
 });
+
+
+/* --------------------- bower JS--------------------- */
+gulp.task('bower-CSS', function() {
+    var filterCSS = gulpFilter('**/*.css', { restore: true });
+    return gulp.src('./bower.json')
+        .pipe(mainBowerFiles())
+        .pipe(filterCSS)
+        .pipe(rename("vendor.css"))
+        .pipe(gulp.dest('dev/css/libs'));
+});
+
+/* --------------------- bower CSS--------------------- */
+gulp.task('bower-JS', function() {
+    var filterJS = gulpFilter('**/*.js', { restore: true });
+    return gulp.src('./bower.json')
+        .pipe(mainBowerFiles())
+        .pipe(filterJS)
+        .pipe(rename("vendor.js"))
+        .pipe(gulp.dest('dev/js/libs'));
+});
+
+
 
 
 /* -------- gulp server  -------- */
