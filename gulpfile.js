@@ -13,9 +13,36 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     pngquant = require('imagemin-pngquant'),
     spritesmith = require('gulp.spritesmith'),
-    plumber = require('gulp-plumber'),
-    mainBowerFiles = require('gulp-main-bower-files'),
-    gulpFilter = require('gulp-filter');
+    plumber = require('gulp-plumber');
+
+
+/* --------- paths --------- */
+var paths = {
+    scss: {
+        location: ['dev/scss/*.scss'],
+        destination: 'dev/css'
+    },
+
+    js: {
+        location: ['dev/js/modules/*.js'],
+        destination: 'dev/js'
+    },
+
+    bowerCss: {
+        location: [
+            'bower_components/normalize-css/normalize.css'
+        ],
+        destination: 'dev/css'
+    },
+
+    bowerJS: {
+        location: [
+            'bower_components/jquery/dist/jquery.js'
+        ],
+        destination: 'dev/js'
+    }
+};
+
 
 /* ----- jade ----- */
 gulp.task('jade', function () {
@@ -27,20 +54,14 @@ gulp.task('jade', function () {
         .pipe(gulp.dest('dev/'))
 });
 
+
 /* ------ sass ------ */
 gulp.task('sass', function () {
-    gulp.src('dev/scss/*.scss')
+    gulp.src(paths.scss.location)
         .pipe(plumber())
         .pipe(sass.sync().on('error', sass.logError))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('dev/css'));
-});
-
-/* -------- autoprefixer -------- */
-gulp.task('autpr', function () {
-    return gulp.src('prod/css/main.min.css')
-        .pipe(autoprefixer(['> 5%', 'last 5 versions', 'IE 9']))
-        .pipe(gulp.dest('prod/css'));
+        .pipe(gulp.dest(paths.scss.destination));
 });
 
 
@@ -53,11 +74,45 @@ gulp.task('minify-css', function () {
 });
 
 
+/* -------- autoprefixer -------- */
+gulp.task('autpr', function () {
+    return gulp.src('prod/css/main.min.css')
+        .pipe(autoprefixer(['> 5%', 'last 5 versions', 'IE 9']))
+        .pipe(gulp.dest('prod/css'));
+});
+
+
+
+/* -------- concat CSS -------- */
+gulp.task('concat-bower-css', function () {
+    return gulp.src(paths.bowerCss.location)
+        .pipe(concat('vendor.css'))
+        .pipe(gulp.dest(paths.bowerCss.destination));
+});
+
+
+/* -------- minification Vendor CSS -------- */
+gulp.task('minify-vendor', function () {
+    return gulp.src('dev/css/vendor.css')
+        .pipe(minifyCss({compatibility: 'ie8'}))
+        .pipe(rename("vendor.min.css"))
+        .pipe(gulp.dest('prod/css'));
+});
+
+
+
 /* -------- concat JS -------- */
-gulp.task('concat', function () {
-    return gulp.src('dev/js/modules/*.js')
+gulp.task('concat-JS', function () {
+    return gulp.src(paths.js.location)
         .pipe(concat('app.js'))
-        .pipe(gulp.dest('dev/js'));
+        .pipe(gulp.dest(paths.js.destination));
+});
+
+/* -------- concat Vendor JS -------- */
+gulp.task('concat-bower-js', function () {
+    return gulp.src(paths.bowerJS.location)
+        .pipe(concat('vendor.js'))
+        .pipe(gulp.dest(paths.bowerJS.destination));
 });
 
 
@@ -66,6 +121,15 @@ gulp.task('compress', function () {
     return gulp.src('dev/js/app.js')
         .pipe(uglify())
         .pipe(rename("app.min.js"))
+        .pipe(gulp.dest('prod/js'));
+});
+
+
+/* -------- minification Bower JS -------- */
+gulp.task('compress-vendor-js', function () {
+    return gulp.src('dev/js/vendor.js')
+        .pipe(uglify())
+        .pipe(rename("vendor.min.js"))
         .pipe(gulp.dest('prod/js'));
 });
 
@@ -94,29 +158,6 @@ gulp.task('imagemin', function () {
 });
 
 
-/* --------------------- bower JS--------------------- */
-gulp.task('bower-CSS', function() {
-    var filterCSS = gulpFilter('**/*.css', { restore: true });
-    return gulp.src('./bower.json')
-        .pipe(mainBowerFiles())
-        .pipe(filterCSS)
-        .pipe(rename("vendor.css"))
-        .pipe(gulp.dest('dev/css/libs'));
-});
-
-/* --------------------- bower CSS--------------------- */
-gulp.task('bower-JS', function() {
-    var filterJS = gulpFilter('**/*.js', { restore: true });
-    return gulp.src('./bower.json')
-        .pipe(mainBowerFiles())
-        .pipe(filterJS)
-        .pipe(rename("vendor.js"))
-        .pipe(gulp.dest('dev/js/libs'));
-});
-
-
-
-
 /* -------- gulp server  -------- */
 gulp.task('server', function () {
     browserSync({
@@ -132,11 +173,7 @@ gulp.task('server', function () {
 gulp.task('watch', function () {
     gulp.watch('dev/jade/*.jade', ['jade']);
     gulp.watch('dev/scss/*.scss', ['sass']);
-    gulp.watch('dev/css/*.css', ['minify-css']);
-    gulp.watch('prod/css/*.css', ['autpr']);
-    gulp.watch('dev/js/modules/*.js', ['concat']);
-    gulp.watch('dev/js/app.js', ['compress']);
-    gulp.watch('dev/img/**/*', ['imagemin']);
+    gulp.watch('dev/js/modules/*.js', ['concat-JS']);
     gulp.watch([
         'dev/index.html',
         'dev/js/**/*.js',
@@ -146,12 +183,24 @@ gulp.task('watch', function () {
 
 
 gulp.task('default', [
-    'watch',
     'jade',
     'sass',
-    'concat',
+    'concat-JS',
+    'concat-bower-css',
+    'concat-bower-js',
     'compress',
+    'watch',
     'server'
+]);
+
+
+gulp.task('prod', [
+    'minify-css',
+    'autpr',
+    'minify-vendor',
+    'compress',
+    'compress-vendor-js',
+    'imagemin'
 ]);
 
 
