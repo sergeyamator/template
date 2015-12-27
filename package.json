@@ -17,6 +17,10 @@
     "gulp-sass": "^2.1.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
-    "gulp.spritesmith": "^4.3.0"
+    "gulp.spritesmith": "^6.0.0",
+    "imagemin-pngquant": "^4.2.0"
+  },
+  "dependencies": {
+    "normalize-scss": "^4.0.3"
   }
 }
