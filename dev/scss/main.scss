@@ -1,8 +1,6 @@
-@import "mixins";
-@import "common";
-
-@import "header";
-
-@import "footer";
-
-
+@import "base/_fonts";
+@import "utils/_mixin";
+@import "utils/_sprite";
+@import "utils/variables";
+@import "base/base";
+@import "base/_common";
