@@ -1,0 +1,16 @@
+html, body { 
+  height: 100%;
+  font-family: sans-serif;
+}
+
+ul, ol {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+input {
+  &:focus {
+    outline: none;
+  }
+}
