@@ -13,6 +13,7 @@ const gulp         = require('gulp'),
       pngquant     = require('imagemin-pngquant'),
       spritesmith  = require('gulp.spritesmith'),
       plumber      = require('gulp-plumber'),
+      runSequence = require('run-sequence'),
       clean      = require('gulp-clean');
 
 
@@ -107,6 +108,11 @@ gulp.task('assets-copy', function() {
     .pipe(gulp.dest('prod/assets'));
 });
 
+gulp.task('assets', function() {
+  runSequence('assets-clean',
+    'assets-copy');
+});
+
 /* -------- gulp server  -------- */
 gulp.task('server', function() {
   browserSync({
@@ -124,7 +130,7 @@ gulp.task('watch', function() {
   gulp.watch('dev/scss/**/*.scss', ['sass-compile']);
   gulp.watch('dev/img/**/*', ['img-min']);
   gulp.watch('dev/js/modules/*.js', ['concat-js']);
-  gulp.watch('dev/assets/**/*', ['assets-clean', 'assets-copy']);
+  gulp.watch('dev/assets/**/*', ['assets']);
   gulp.watch([
     'prod/**/*.html',
     'prod/js/**/*.js',
@@ -137,6 +143,7 @@ gulp.task('default', [
   'jade-compile',
   'sass-compile',
   'concat-js',
+  'assets',
   'server',
   'watch'
 ]);
