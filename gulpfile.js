@@ -139,14 +139,15 @@ gulp.task('watch', function() {
 });
 
 
-gulp.task('default', [
-  'jade-compile',
-  'sass-compile',
-  'concat-js',
-  'assets',
-  'server',
-  'watch'
-]);
+gulp.task('default', function() {
+  runSequence(
+    'jade-compile',
+    'sass-compile',
+    'concat-js',
+    'assets',
+    'server',
+    'watch')
+});
 
 
 
