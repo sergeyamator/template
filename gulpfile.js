@@ -3,7 +3,6 @@
 const gulp         = require('gulp'),
       concat       = require('gulp-concat'),
       browserSync  = require('browser-sync'),
-      uglify       = require('gulp-uglify'),
       sass         = require('gulp-sass'),
       sourcemaps   = require('gulp-sourcemaps'),
       autoprefixer = require('gulp-autoprefixer'),
@@ -13,8 +12,9 @@ const gulp         = require('gulp'),
       pngquant     = require('imagemin-pngquant'),
       spritesmith  = require('gulp.spritesmith'),
       plumber      = require('gulp-plumber'),
-      runSequence = require('run-sequence'),
-      clean      = require('gulp-clean');
+      runSequence  = require('run-sequence'),
+      webpack      = require('gulp-webpack'),
+      clean        = require('gulp-clean');
 
 
 /* --------- paths --------- */
@@ -62,16 +62,11 @@ gulp.task('sass-compile', function() {
 });
 
 
-/* -------- concat js -------- */
-gulp.task('concat-js', function() {
-  return gulp.src(paths.js.location)
-    .pipe(sourcemaps.init())
-    .pipe(concat('main.min.js'))
-    .pipe(uglify())
-    .pipe(sourcemaps.write())
+gulp.task('webpack', function() {
+  return gulp.src('dev/js/main.js')
+    .pipe(webpack( require('./webpack.config.js') ))
     .pipe(gulp.dest(paths.js.destination));
 });
-
 
 /* -------- auto sprites  -------- */
 gulp.task('sprite', function() {
@@ -88,17 +83,17 @@ gulp.task('sprite', function() {
 
 /* -------- images minification  -------- */
 gulp.task('img-min', function() {
-  return gulp.src('dev/img/**/*')
+  return gulp.src('dev/assets/img/**/*')
     .pipe(imagemin({
       progressive: true,
-      svgoPlugins: [{removeViewBox: false}],
+      svgPlugins: [{removeViewBox: false}],
       use: [pngquant()]
     }))
     .pipe(gulp.dest('prod/img'));
 });
 
 /* -------- Assets clean ------- */
-gulp.task('assets-clean', function () {
+gulp.task('assets-clean', function() {
   return gulp.src('prod/assets', {read: false})
     .pipe(clean());
 });
@@ -129,7 +124,7 @@ gulp.task('watch', function() {
   gulp.watch('dev/jade/**/*.jade', ['jade-compile']);
   gulp.watch('dev/scss/**/*.scss', ['sass-compile']);
   gulp.watch('dev/img/**/*', ['img-min']);
-  gulp.watch('dev/js/modules/*.js', ['concat-js']);
+  gulp.watch('dev/js/**/*.js', ['webpack']);
   gulp.watch('dev/assets/**/*', ['assets']);
   gulp.watch([
     'prod/**/*.html',
@@ -143,7 +138,7 @@ gulp.task('default', function() {
   runSequence(
     'jade-compile',
     'sass-compile',
-    'concat-js',
+    'webpack',
     'assets',
     'server',
     'watch')

@@ -1,6 +1,3 @@
-;(function() {
-    /* ------- plugins init ------- */
-
-    console.log('works');
-
-})();
+module.exports = function() {
+/* ---------- Init ---------- */
+};
