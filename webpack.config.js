@@ -4,11 +4,12 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
 
 module.exports = {
   entry: {
-    app: './dev/js/main.js',
+    'main.min': './dev/js/main.js',
     foundation: $.path.foundation
   },
   output: {
-    filename: 'main.min.js'
+    path: __dirname + '/prod/js',
+    filename: '[name].js'
   },
   devtool: NODE_ENV == 'dev' ? 'cheap-source-map' : null,
 
