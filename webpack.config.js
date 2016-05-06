@@ -1,12 +1,17 @@
+"use strict";
+
+const NODE_ENV = process.env.NODE_ENV || 'dev';
+
 module.exports = {
-  entry: './dev/js/main.js',
+  entry: {
+    app: './dev/js/main.js',
+    foundation: $.path.foundation
+  },
   output: {
-    filename: 'main.min.js' 
+    filename: 'main.min.js'
   },
-  devtool: 'source-map',
-  resolve: {
-    modulesDirectories: ['node_modules', 'bower_components']
-  },
+  devtool: NODE_ENV == 'dev' ? 'cheap-source-map' : null,
+
   module: {
     loaders: [
       {
@@ -22,5 +27,35 @@ module.exports = {
         loaders: ["style", "css", "sass"]
       }
     ]
+  },
+
+  plugins: [
+    new $.gp.webpack.webpack.DefinePlugin({
+      NODE_ENV: JSON.stringify(NODE_ENV)
+    })
+  ],
+
+  resolve: {
+    modulesDirectories: ['node_modules'],
+    extensions: ['', '.js']
+  },
+
+  resolveLoader: {
+    modulesDirectories: ['node_modules'],
+    modulesTemplates: ['*-loader', '*'],
+    extensions: ['', '.js']
   }
 };
+
+
+if (NODE_ENV == 'prod') {
+  module.exports.plugins.push(
+    new $.gp.webpack.webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        drop_console: true,
+        unsafe: true
+      }
+    })
+  );
+}
