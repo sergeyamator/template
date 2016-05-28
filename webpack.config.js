@@ -5,7 +5,7 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
 module.exports = {
   entry: {
     'main.min': './dev/js/main.js',
-    foundation: $.path.foundation
+    'foundation.min': './dev/js/foundation.js'
   },
   output: {
     path: __dirname + '/prod/js',

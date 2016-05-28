@@ -9,7 +9,6 @@ module.exports = () => {
       .pipe($.gp.concat("foundation.min.css"))
       .pipe($.gp.sass.sync().on('error', $.gp.sass.logError))
       .pipe($.gp.sass({outputStyle: 'compressed'}))
-      //.pipe(autoprefixer())
       .pipe($.gp.sourcemaps.write())
       .pipe($.gulp.dest('prod/css'));
   });

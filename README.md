@@ -1,5 +1,12 @@
-Open Terminal (for Mac and Linux users) or the command prompt (for Windows users)
+This project uses node.js, gulp, webpack, jade, sass so you have to install them globally to your system.
 
-1. git clone https://github.com/vikulchik/template.git
-2. Change the current working directory to your local project git remote set-url origin
-3. npm install
+Open Terminal (for Mac and Linux users) or the command prompt (for Windows users)
+git clone https://github.com/path/to/repo
+npm install
+There are two main folder:
+
+dev - for developing (jade, sass, ...) 
+prod - folder for prodaction with files minification
+
+For this project uses BEM methodology:
+For element should use block-name_elem-name For modifier should use block-name_elem-name--modifier
