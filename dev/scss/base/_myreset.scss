@@ -1,6 +1,9 @@
 html {
   box-sizing: border-box;
 }
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 
 *,
 *:before,
@@ -69,6 +72,10 @@ input[type="radio"]{
   padding: 0;
   color: inherit;
   font: inherit;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 
