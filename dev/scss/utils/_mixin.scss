@@ -1,3 +1,4 @@
+
 @mixin circle($width, $color) {
   width: $width;
   height: $width;
@@ -63,7 +64,7 @@
   }
 }
 
-%clearfix {
+.clearfix {
 
   &:before,
   &:after {
@@ -142,4 +143,10 @@
   &::input-placeholder {
     color: $color;
   }
+}
+
+@mixin setOneLineText() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

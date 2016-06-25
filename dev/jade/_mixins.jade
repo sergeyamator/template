@@ -1,22 +1,52 @@
-mixin list(items, className, active)
-  nav(class="#{className}")
+mixin list(items, className, active, url)
+  div(class="#{className}")
     ul(class="#{className}_list")
       each item, key in items
         if key == active
           li(class="#{className}_item #{className}_item--active")
-            a(href="#" class="#{className}_link")= item
+            a(href="#{url[key]}" class="#{className}_link")= item
         else
           li(class="#{className}_item")
-            a(href="#" class="#{className}_link")= item
+            a(href="#{url[key]}" class="#{className}_link")= item
 
 
+- var svgPath = "assets/img/svg-sprite.svg"
 
+mixin svg(svgName, className, title)
+  svg(class=className)
+    title= title
+    use(xlink:href=svgPath+'#'+svgName)
 
+//- How to use:
+//-  +use("phone2","svg-phone2-dims")
 
-
+//--------------------------------------------
+//- Mixin for list with svg
+//--------------------------------------------
+mixin svgList(items, className, active, url, svgName, svgClass)
+  div(class="#{className}")
+    ul(class="#{className}_list")
+      each item, key in items
+        if key == active
+          li(class="#{className}_item #{className}_item--active")
+            a(href="#{url[key]}" class="#{className}_link" target="_blank")
+              +svg('' + svgName[key], '' + svgClass[key], item)
+        else
+          li(class="#{className}_item")
+            a(href="#{url[key]}" class="#{className}_link" target="_blank")
+              +svg('' + svgName[key], '' + svgClass[key], item)
+//- How to use
+  - var socials = ['Vkontakte', 'Github', 'LinkedIn']
+  - var url = ['https://vk.com/id10010828', 'https://github.com/sergeyamator', 'https://ua.linkedin.com/in/rubets']
+  - var svgName = ['vk', 'github', 'in']
+  - var svgClass = ['svg-vk-dims', 'svg-github-dims', 'svg-in-dims']
+  +svgList(socials, 'social', null, url, svgName, svgClass)
+//--------------------------------------------
 mixin list-mod(items, className, id, mod)
-  nav(class="#{className}")
+  div(class="#{className}")
     ul(class="#{className}_list")
       each item in items
         li(class="#{className}_item")
           a(href="#" class="#{className}_link")= item
+
+
